@@ -12,6 +12,7 @@ class Alarm {
   final double radiusInMeters;
   final AlarmTriggerType triggerType;
   final bool isActive;
+  final bool? lastKnownInside;
 
   Alarm({
     required this.id,
@@ -20,6 +21,7 @@ class Alarm {
     required this.radiusInMeters,
     required this.triggerType,
     this.isActive = true,
+    this.lastKnownInside,
   });
 
   Alarm copyWith({
@@ -29,6 +31,8 @@ class Alarm {
     double? radiusInMeters,
     AlarmTriggerType? triggerType,
     bool? isActive,
+    bool? lastKnownInside,
+    bool clearLastKnownInside = false,
   }) {
     return Alarm(
       id: id ?? this.id,
@@ -37,6 +41,41 @@ class Alarm {
       radiusInMeters: radiusInMeters ?? this.radiusInMeters,
       triggerType: triggerType ?? this.triggerType,
       isActive: isActive ?? this.isActive,
+      lastKnownInside: clearLastKnownInside
+          ? null
+          : (lastKnownInside ?? this.lastKnownInside),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'latitude': position.latitude,
+      'longitude': position.longitude,
+      'radiusInMeters': radiusInMeters,
+      'triggerType': triggerType.name,
+      'isActive': isActive,
+      'lastKnownInside': lastKnownInside,
+    };
+  }
+
+  factory Alarm.fromJson(Map<String, dynamic> json) {
+    final double lat = (json['latitude'] as num).toDouble();
+    final double lng = (json['longitude'] as num).toDouble();
+    final String triggerTypeName = json['triggerType'] as String? ?? 'arrive';
+
+    return Alarm(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      position: LatLng(lat, lng),
+      radiusInMeters: (json['radiusInMeters'] as num?)?.toDouble() ?? 500.0,
+      triggerType: AlarmTriggerType.values.firstWhere(
+        (e) => e.name == triggerTypeName || e.toString() == triggerTypeName,
+        orElse: () => AlarmTriggerType.arrive,
+      ),
+      isActive: json['isActive'] as bool? ?? true,
+      lastKnownInside: json['lastKnownInside'] as bool?,
     );
   }
 }

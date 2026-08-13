@@ -6,15 +6,7 @@ import 'services/alarm_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AlarmService()),
-      ],
-      child: const GeoAlarmApp(),
-    ),
-  );
+  runApp(const GeoAlarmApp());
 }
 
 class GeoAlarmApp extends StatelessWidget {
@@ -22,13 +14,18 @@ class GeoAlarmApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Geo Alarm',
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system, // Cambia automáticamente según el sistema
-      home: const MapScreen(),
-      debugShowCheckedModeBanner: false,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AlarmService()),
+      ],
+      child: MaterialApp(
+        title: 'Geo Alarm',
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.system,
+        home: const MapScreen(),
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }

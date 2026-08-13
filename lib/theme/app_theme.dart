@@ -37,18 +37,20 @@ class AppTheme {
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: const CardThemeData(
         color: Colors.white,
         elevation: 2,
         shadowColor: Colors.black12,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: _lightPrimary,
           foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
           ),
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
@@ -78,18 +80,20 @@ class AppTheme {
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
       ),
-      cardTheme: CardTheme(
-        color: const Color(0xFF1E1E1E),
+      cardTheme: const CardThemeData(
+        color: Color(0xFF1E1E1E),
         elevation: 2,
         shadowColor: Colors.black45,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: _darkPrimary,
           foregroundColor: const Color(0xFF003829),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
           ),
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),

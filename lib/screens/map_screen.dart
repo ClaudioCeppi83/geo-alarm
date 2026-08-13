@@ -24,12 +24,18 @@ class _MapScreenState extends State<MapScreen> {
 
     // Initial position placeholder (can be updated to user location)
     LatLng initialPosition = alarmService.currentPosition != null
-        ? LatLng(alarmService.currentPosition!.latitude, alarmService.currentPosition!.longitude)
+        ? LatLng(
+            alarmService.currentPosition!.latitude,
+            alarmService.currentPosition!.longitude,
+          )
         : const LatLng(0, 0);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Geo Alarm', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Geo Alarm',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: theme.colorScheme.surface,
       ),
       body: Stack(
@@ -55,7 +61,88 @@ class _MapScreenState extends State<MapScreen> {
             circles: _buildCircles(alarmService.alarms, theme),
           ),
 
-          if (_isCreating && _selectedLocation == null)
+          // Ringing Alarm Banner
+          if (alarmService.isRinging)
+            Positioned(
+              top: 16,
+              left: 16,
+              right: 16,
+              child: Material(
+                elevation: 8,
+                borderRadius: BorderRadius.circular(16),
+                color: theme.colorScheme.errorContainer,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: theme.colorScheme.error,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.alarm_on,
+                            color: theme.colorScheme.onErrorContainer,
+                            size: 28,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '¡ALARMA ACTIVADA!',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: theme.colorScheme.onErrorContainer,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  alarmService.activeRingingAlarm?.name ??
+                                      'Ubicación alcanzada',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: theme.colorScheme.onErrorContainer,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () => alarmService.stopAlarm(),
+                          icon: const Icon(Icons.volume_off),
+                          label: const Text('Silenciar / Detener Alarma'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: theme.colorScheme.error,
+                            foregroundColor: theme.colorScheme.onError,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            elevation: 0,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+          if (_isCreating && _selectedLocation == null && !alarmService.isRinging)
             Positioned(
               top: 20,
               left: 20,
@@ -88,13 +175,19 @@ class _MapScreenState extends State<MapScreen> {
             if (alarmService.currentPosition != null) {
               _mapController?.animateCamera(
                 CameraUpdate.newLatLng(
-                  LatLng(alarmService.currentPosition!.latitude, alarmService.currentPosition!.longitude),
+                  LatLng(
+                    alarmService.currentPosition!.latitude,
+                    alarmService.currentPosition!.longitude,
+                  ),
                 ),
               );
             }
           },
           backgroundColor: theme.colorScheme.primaryContainer,
-          child: Icon(Icons.my_location, color: theme.colorScheme.onPrimaryContainer),
+          child: Icon(
+            Icons.my_location,
+            color: theme.colorScheme.onPrimaryContainer,
+          ),
         ),
       ),
     );
@@ -108,7 +201,9 @@ class _MapScreenState extends State<MapScreen> {
           markerId: MarkerId(alarm.id),
           position: alarm.position,
           icon: BitmapDescriptor.defaultMarkerWithHue(
-            alarm.isActive ? BitmapDescriptor.hueGreen : BitmapDescriptor.hueRed,
+            alarm.isActive
+                ? BitmapDescriptor.hueGreen
+                : BitmapDescriptor.hueRed,
           ),
           infoWindow: InfoWindow(title: alarm.name),
         ),
@@ -120,8 +215,10 @@ class _MapScreenState extends State<MapScreen> {
         Marker(
           markerId: const MarkerId('selected'),
           position: _selectedLocation!,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan),
-        )
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueCyan,
+          ),
+        ),
       );
     }
 
@@ -137,11 +234,10 @@ class _MapScreenState extends State<MapScreen> {
           center: alarm.position,
           radius: alarm.radiusInMeters,
           fillColor: alarm.isActive
-              ? theme.colorScheme.primary.withOpacity(0.2)
-              : Colors.grey.withOpacity(0.2),
-          strokeColor: alarm.isActive
-              ? theme.colorScheme.primary
-              : Colors.grey,
+              ? theme.colorScheme.primary.withValues(alpha: 0.2)
+              : Colors.grey.withValues(alpha: 0.2),
+          strokeColor:
+              alarm.isActive ? theme.colorScheme.primary : Colors.grey,
           strokeWidth: 2,
         ),
       );
@@ -153,10 +249,10 @@ class _MapScreenState extends State<MapScreen> {
           circleId: const CircleId('selected_radius'),
           center: _selectedLocation!,
           radius: 500, // Default radius preview
-          fillColor: theme.colorScheme.primary.withOpacity(0.2),
+          fillColor: theme.colorScheme.primary.withValues(alpha: 0.2),
           strokeColor: theme.colorScheme.primary,
           strokeWidth: 2,
-        )
+        ),
       );
     }
 
@@ -184,7 +280,11 @@ class _MapScreenState extends State<MapScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Alarmas', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+              Text(
+                'Alarmas',
+                style: theme.textTheme.titleLarge
+                    ?.copyWith(fontWeight: FontWeight.bold),
+              ),
               if (_isCreating)
                 TextButton(
                   onPressed: () {
@@ -201,7 +301,7 @@ class _MapScreenState extends State<MapScreen> {
           if (alarmService.alarms.isEmpty)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 20),
-              child: Center(child: Text('No hay alarmas activas.')),
+              child: Center(child: Text('No hay alarmas creadas.')),
             )
           else
             SizedBox(
@@ -212,11 +312,19 @@ class _MapScreenState extends State<MapScreen> {
                   final alarm = alarmService.alarms[index];
                   return Card(
                     child: ListTile(
-                      title: Text(alarm.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: Text(alarm.triggerType == AlarmTriggerType.arrive ? 'Al llegar' : 'Al salir'),
+                      title: Text(
+                        alarm.name,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        alarm.triggerType == AlarmTriggerType.arrive
+                            ? 'Al llegar (${alarm.radiusInMeters.toInt()}m)'
+                            : 'Al salir (${alarm.radiusInMeters.toInt()}m)',
+                      ),
                       trailing: Switch(
                         value: alarm.isActive,
-                        onChanged: (val) => alarmService.toggleAlarm(alarm.id, val),
+                        onChanged: (val) =>
+                            alarmService.toggleAlarm(alarm.id, val),
                         activeThumbColor: theme.colorScheme.primary,
                       ),
                       onLongPress: () => alarmService.removeAlarm(alarm.id),
@@ -248,7 +356,8 @@ class _MapScreenState extends State<MapScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) => CreateAlarmModal(selectedLocation: _selectedLocation!),
+      builder: (context) =>
+          CreateAlarmModal(selectedLocation: _selectedLocation!),
     ).then((_) {
       setState(() {
         _isCreating = false;

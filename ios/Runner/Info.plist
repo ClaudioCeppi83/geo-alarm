@@ -26,6 +26,16 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Geo Alarm requiere acceso a tu ubicación para activar alarmas al llegar o salir de tus zonas guardadas.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Geo Alarm requiere ubicación en segundo plano para notificar y hacer sonar alarmas cuando la app esté cerrada.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+		<string>audio</string>
+		<string>fetch</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

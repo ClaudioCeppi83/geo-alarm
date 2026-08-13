@@ -1,4 +1,4 @@
-package com.example.geo_alarm
+package com.erceppi.geoalarm
 
 import io.flutter.embedding.android.FlutterActivity
 

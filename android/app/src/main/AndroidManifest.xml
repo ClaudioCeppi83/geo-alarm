@@ -12,11 +12,13 @@
     <application
         android:label="Geo Alarm"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:fullBackupContent="false">
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD_DEMO_MAPS_KEY_GEOALARM" />
+            android:value="AIzaSyBY1HdYP0RCzGdEM9AMZ0XPUD3mRlJnkRI" />
 
         <activity
             android:name=".MainActivity"

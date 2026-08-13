@@ -26,6 +26,6 @@ void main() {
 
 		expect(find.byType(MapScreen), findsOneWidget);
 		expect(find.text('Geo Alarm'), findsWidgets);
-		expect(find.text('Alarmas'), findsOneWidget);
+		expect(find.text('Tus Geocercas'), findsOneWidget);
 	});
 }

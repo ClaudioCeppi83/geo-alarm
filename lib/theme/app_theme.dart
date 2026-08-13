@@ -2,53 +2,53 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // Light Theme Colors
-  static const Color _lightSurface = Color(0xFFFCF9F8);
-  static const Color _lightPrimary = Color(0xFF006C52);
-  static const Color _lightPrimaryContainer = Color(0xFF98FFD9);
-  static const Color _lightOnSurface = Color(0xFF1C1B1B);
-  static const Color _lightError = Color(0xFFBA1A1A);
-
-  // Dark Theme Colors
-  static const Color _darkSurface = Color(0xFF121212);
-  static const Color _darkPrimary = Color(0xFF8FF6D0);
-  static const Color _darkPrimaryContainer = Color(0xFF00513D);
-  static const Color _darkOnSurface = Color(0xFFE5E2E1);
-  static const Color _darkError = Color(0xFFFFB4AB);
+  static const Color seedGreen = Color(0xFF006C52);
 
   static ThemeData get lightTheme {
+    final baseColorScheme = ColorScheme.fromSeed(
+      seedColor: seedGreen,
+      brightness: Brightness.light,
+    );
+
     return ThemeData(
       useMaterial3: true,
-      colorScheme: const ColorScheme.light(
-        surface: _lightSurface,
-        primary: _lightPrimary,
-        primaryContainer: _lightPrimaryContainer,
-        onSurface: _lightOnSurface,
-        error: _lightError,
+      colorScheme: baseColorScheme.copyWith(
+        surface: const Color(0xFFFCF9F8),
+        onSurface: const Color(0xFF1C1B1B),
+        primary: seedGreen,
+        onPrimary: Colors.white,
+        primaryContainer: const Color(0xFF98FFD9),
+        onPrimaryContainer: const Color(0xFF002117),
+        error: const Color(0xFFBA1A1A),
+        onError: Colors.white,
+        errorContainer: const Color(0xFFFFDAD6),
+        onErrorContainer: const Color(0xFF410002),
+        surfaceContainerHighest: const Color(0xFFE0E3E0),
       ),
-      scaffoldBackgroundColor: _lightSurface,
+      scaffoldBackgroundColor: const Color(0xFFFCF9F8),
       textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme).apply(
-        bodyColor: _lightOnSurface,
-        displayColor: _lightOnSurface,
+        bodyColor: const Color(0xFF1C1B1B),
+        displayColor: const Color(0xFF1C1B1B),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: _lightSurface,
+        backgroundColor: Color(0xFFFCF9F8),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
       ),
-      cardTheme: const CardThemeData(
+      cardTheme: CardThemeData(
         color: Colors.white,
-        elevation: 2,
-        shadowColor: Colors.black12,
-        shape: RoundedRectangleBorder(
+        elevation: 1,
+        shadowColor: Colors.black.withValues(alpha: 0.08),
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: _lightPrimary,
+          backgroundColor: seedGreen,
           foregroundColor: Colors.white,
+          elevation: 0,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(16)),
           ),
@@ -60,38 +60,50 @@ class AppTheme {
   }
 
   static ThemeData get darkTheme {
+    final baseColorScheme = ColorScheme.fromSeed(
+      seedColor: seedGreen,
+      brightness: Brightness.dark,
+    );
+
     return ThemeData(
       useMaterial3: true,
-      colorScheme: const ColorScheme.dark(
-        surface: _darkSurface,
-        primary: _darkPrimary,
-        primaryContainer: _darkPrimaryContainer,
-        onSurface: _darkOnSurface,
-        error: _darkError,
+      colorScheme: baseColorScheme.copyWith(
+        surface: const Color(0xFF121212),
+        onSurface: const Color(0xFFE5E2E1),
+        primary: const Color(0xFF8FF6D0),
+        onPrimary: const Color(0xFF003829),
+        primaryContainer: const Color(0xFF00513D),
+        onPrimaryContainer: const Color(0xFF98FFD9),
+        error: const Color(0xFFFFB4AB),
+        onError: const Color(0xFF690005),
+        errorContainer: const Color(0xFF93000A),
+        onErrorContainer: const Color(0xFFFFDAD6),
+        surfaceContainerHighest: const Color(0xFF2B2F2E),
       ),
-      scaffoldBackgroundColor: _darkSurface,
+      scaffoldBackgroundColor: const Color(0xFF121212),
       textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).apply(
-        bodyColor: _darkOnSurface,
-        displayColor: _darkOnSurface,
+        bodyColor: const Color(0xFFE5E2E1),
+        displayColor: const Color(0xFFE5E2E1),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: _darkSurface,
+        backgroundColor: Color(0xFF1E1E1E),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
       ),
-      cardTheme: const CardThemeData(
-        color: Color(0xFF1E1E1E),
-        elevation: 2,
-        shadowColor: Colors.black45,
-        shape: RoundedRectangleBorder(
+      cardTheme: CardThemeData(
+        color: const Color(0xFF1E1E1E),
+        elevation: 1,
+        shadowColor: Colors.black.withValues(alpha: 0.3),
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: _darkPrimary,
+          backgroundColor: const Color(0xFF8FF6D0),
           foregroundColor: const Color(0xFF003829),
+          elevation: 0,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(16)),
           ),

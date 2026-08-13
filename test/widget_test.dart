@@ -1,23 +1,31 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geo_alarm/main.dart';
+import 'package:geo_alarm/screens/map_screen.dart';
+import 'package:geo_alarm/services/alarm_service.dart';
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
+	TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
-    SharedPreferences.setMockInitialValues({});
-  });
+	setUp(() {
+		SharedPreferences.setMockInitialValues({});
+	});
 
-  testWidgets('GeoAlarmApp smoke test renders title and UI components',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(const GeoAlarmApp());
-    await tester.pump();
+	testWidgets('GeoAlarmApp renders MultiProvider and loads MapScreen without crashing', (WidgetTester tester) async {
+		await tester.pumpWidget(
+			MultiProvider(
+				providers: [
+					ChangeNotifierProvider(create: (_) => AlarmService()),
+				],
+				child: const GeoAlarmApp(),
+			),
+		);
 
-    // Verify that AppBar title is rendered
-    expect(find.text('Geo Alarm'), findsOneWidget);
+		await tester.pump();
 
-    // Verify that the bottom panel with 'Alarmas' is rendered
-    expect(find.textContaining('Alarmas'), findsOneWidget);
-  });
+		expect(find.byType(MapScreen), findsOneWidget);
+		expect(find.text('Geo Alarm'), findsWidgets);
+		expect(find.text('Alarmas'), findsOneWidget);
+	});
 }

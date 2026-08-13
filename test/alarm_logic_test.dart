@@ -23,7 +23,7 @@ void main() {
       const alarmCenter = LatLng(-34.6037, -58.3816);
       const userLocation = LatLng(-34.6038, -58.3817); // ~15 meters away
 
-      const alarm = Alarm(
+      final alarm = Alarm(
         id: 'arrive-1',
         name: 'Zona Segura',
         position: alarmCenter,
@@ -47,7 +47,7 @@ void main() {
       const alarmCenter = LatLng(-34.6037, -58.3816);
       const userLocation = LatLng(-34.6200, -58.4000); // > 2 km away
 
-      const alarm = Alarm(
+      final alarm = Alarm(
         id: 'leave-1',
         name: 'Zona Salida',
         position: alarmCenter,

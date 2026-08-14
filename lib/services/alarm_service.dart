@@ -86,6 +86,22 @@ class AlarmService extends ChangeNotifier {
 				iOS: initIOS,
 			);
 			await _notificationsPlugin.initialize(initSettings);
+
+			final androidImplementation = _notificationsPlugin
+					.resolvePlatformSpecificImplementation<
+							AndroidFlutterLocalNotificationsPlugin>();
+			await androidImplementation?.requestNotificationsPermission();
+
+			const AndroidNotificationChannel channel = AndroidNotificationChannel(
+				'geo_alarm_channel',
+				'Geo Alarms',
+				description:
+						'Canal de notificaciones prioritarias para alarmas por ubicación',
+				importance: Importance.max,
+				playSound: true,
+				enableVibration: true,
+			);
+			await androidImplementation?.createNotificationChannel(channel);
 		} catch (e) {
 			debugPrint('Error initializing notifications: $e');
 		}
@@ -202,10 +218,38 @@ class AlarmService extends ChangeNotifier {
 
 			await _positionStream?.cancel();
 
-			const LocationSettings locationSettings = LocationSettings(
-				accuracy: LocationAccuracy.high,
-				distanceFilter: 10,
-			);
+			LocationSettings locationSettings;
+			if (defaultTargetPlatform == TargetPlatform.android) {
+				locationSettings = AndroidSettings(
+					accuracy: LocationAccuracy.high,
+					distanceFilter: 10,
+					forceLocationManager: false,
+					intervalDuration: const Duration(seconds: 4),
+					foregroundNotificationConfig: const ForegroundNotificationConfig(
+						notificationTitle: "Geo Alarm en ejecución",
+						notificationText: "Monitoreando geocercas activas en segundo plano",
+						notificationIcon: AndroidResource(
+							name: 'ic_launcher',
+							defType: 'mipmap',
+						),
+						enableWakeLock: true,
+					),
+				);
+			} else if (defaultTargetPlatform == TargetPlatform.iOS ||
+					defaultTargetPlatform == TargetPlatform.macOS) {
+				locationSettings = AppleSettings(
+					accuracy: LocationAccuracy.high,
+					activityType: ActivityType.fitness,
+					distanceFilter: 10,
+					pauseLocationUpdatesAutomatically: false,
+					showBackgroundLocationIndicator: true,
+				);
+			} else {
+				locationSettings = const LocationSettings(
+					accuracy: LocationAccuracy.high,
+					distanceFilter: 10,
+				);
+			}
 
 			_positionStream = Geolocator.getPositionStream(
 				locationSettings: locationSettings,
@@ -338,17 +382,23 @@ class AlarmService extends ChangeNotifier {
 					AndroidNotificationDetails(
 				'geo_alarm_channel',
 				'Geo Alarms',
-				channelDescription: 'Notifications for location based alarms',
+				channelDescription:
+						'Canal de notificaciones prioritarias para alarmas por ubicación',
 				importance: Importance.max,
-				priority: Priority.high,
+				priority: Priority.max,
+				fullScreenIntent: true,
+				category: AndroidNotificationCategory.alarm,
+				visibility: NotificationVisibility.public,
+				ongoing: true,
+				autoCancel: false,
 			);
 			const NotificationDetails platformDetails = NotificationDetails(
 				android: androidDetails,
 			);
 			await _notificationsPlugin.show(
 				alarm.id.hashCode,
-				'¡Alarma de Ubicación!',
-				'Alarma disparada: ${alarm.name}',
+				'🚨 ¡Alarma de Ubicación!',
+				'Zona alcanzada: ${alarm.name}',
 				platformDetails,
 			);
 		} catch (e) {

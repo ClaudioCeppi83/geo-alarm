@@ -41,8 +41,10 @@ class SearchResult {
 }
 
 class LocationSearchService {
-	static const String _googleApiKey =
-			'AIzaSyBY1HdYP0RCzGdEM9AMZ0XPUD3mRlJnkRI';
+	static const String _googleApiKey = String.fromEnvironment(
+		'MAPS_API_KEY',
+		defaultValue: '',
+	);
 
 	/// Search locations by text query using a multi-tiered resilient approach
 	Future<List<SearchResult>> search(String query) async {
@@ -84,24 +86,26 @@ class LocationSearchService {
 			debugPrint('Native geocoding tier error: $e');
 		}
 
-		// Tier 2: Try Google Maps Geocoding REST API
-		try {
-			final url = Uri.parse(
-				'https://maps.googleapis.com/maps/api/geocode/json?address=${Uri.encodeComponent(query)}&key=$_googleApiKey',
-			);
-			final response = await http.get(url).timeout(const Duration(seconds: 5));
-			if (response.statusCode == 200) {
-				final data = json.decode(response.body);
-				final results = data['results'] as List?;
-				if (results != null && results.isNotEmpty) {
-					return results
-							.map((item) => SearchResult.fromGoogle(item))
-							.take(5)
-							.toList();
+		// Tier 2: Try Google Maps Geocoding REST API (if key is configured)
+		if (_googleApiKey.isNotEmpty) {
+			try {
+				final url = Uri.parse(
+					'https://maps.googleapis.com/maps/api/geocode/json?address=${Uri.encodeComponent(query)}&key=$_googleApiKey',
+				);
+				final response = await http.get(url).timeout(const Duration(seconds: 5));
+				if (response.statusCode == 200) {
+					final data = json.decode(response.body);
+					final results = data['results'] as List?;
+					if (results != null && results.isNotEmpty) {
+						return results
+								.map((item) => SearchResult.fromGoogle(item))
+								.take(5)
+								.toList();
+					}
 				}
+			} catch (e) {
+				debugPrint('Google Geocoding REST API error: $e');
 			}
-		} catch (e) {
-			debugPrint('Google Geocoding REST API error: $e');
 		}
 
 		// Tier 3: Resilient Fallback to OpenStreetMap Nominatim

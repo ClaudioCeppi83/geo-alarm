@@ -46,3 +46,17 @@ app.*.map.json
 /android/build/
 .gradle/
 
+# Environment, Secrets & Local Configurations
+.env
+.env.*
+*.env
+!.env.example
+local.properties
+**/local.properties
+!local.properties.example
+!**/local.properties.example
+key.properties
+**/key.properties
+
+
+
